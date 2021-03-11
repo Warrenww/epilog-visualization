@@ -35,6 +35,21 @@ if (fs.existsSync(LogPath)) {
   });
 }
 
+app.get('/files', (req, res) => {
+  if (fs.existsSync(LogPath)) {
+    fs.readdir(LogPath, (err, files) => {
+      res.send(files.filter(x => x.startsWith('log_cache')));
+    });
+  }
+});
+
+app.get('/log', (req, res) => {
+  console.log(req);
+});
+app.get('/post', (req, res) => {
+  console.log(req);
+});
+
 app.get('/read/:filename', (req, res) => {
   // console.log(req.params.filename);
   const filepath = LogPath + '/' + req.params.filename;
