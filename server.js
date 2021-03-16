@@ -1,7 +1,7 @@
 const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
-const LogPath = '../bukkit server/plugins/Epilog';
+const LogPath = '/mnt/c/Users/warren-Lab/OneDrive - g.ntu.edu.tw/University/Master/minecraft/bukkit server/plugins/Epilog';
 const PORT = 8080;
 
 const app = express();
@@ -35,11 +35,25 @@ if (fs.existsSync(LogPath)) {
   });
 }
 
-app.get('/files', (req, res) => {
-  if (fs.existsSync(LogPath)) {
-    fs.readdir(LogPath, (err, files) => {
-      res.send(files.filter(x => x.startsWith('log_cache')));
+const ReadDir = (path) => {
+  const files = fs.readdirSync(path);
+  return files.map((file) => {
+    if (fs.lstatSync(`${path}/${file}`).isDirectory()) {
+      return ({
+        name: file,
+        files: ReadDir(`${path}/${file}`),
+      })
+    }
+    return ({
+      name: file,
+      size: fs.statSync(`${path}/${file}`).size / (1024 * 1024),
     });
+  });
+}
+
+app.get('/files', async (req, res) => {
+  if (fs.existsSync(LogPath)) {
+    res.send(ReadDir(LogPath));
   }
 });
 
