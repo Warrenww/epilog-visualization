@@ -1,22 +1,15 @@
+import { useState } from 'react';
 import { AppContainer } from './styles';
 import Navigation from './Navigation';
+import Dashboard from './Dashboard';
 import 'antd/dist/antd.dark.css';
 
 const App = () => {
+  const [activeLog, setActiveLog] = useState<string>('');
   return (
     <AppContainer>
-      <Navigation />
-      <p>
-        Edit <code>src/App.tsx</code> and save to reload.
-      </p>
-      <a
-        className="App-link"
-        href="https://reactjs.org"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Learn React
-      </a>
+      <Navigation setActiveLog={setActiveLog}/>
+      <Dashboard filename={activeLog}/>
     </AppContainer>
   );
 }

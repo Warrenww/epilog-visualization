@@ -67,9 +67,19 @@ app.get('/log', (req, res) => {
 app.get('/post', (req, res) => {
   console.log(req);
 });
+app.get('/read', (req, res) => {
+  console.log(req.query.filename);
+  const filepath = LogPath + '/' + req.query.filename;
+  if (fs.existsSync(filepath)) {
+    const data = fs.readFileSync(filepath, {encoding: 'utf8'}).split('\n').map((x, i) => x ? JSON.parse(x) : {});
+    res.send(data);
+  } else {
+    res.status(404).send('Sorry cant find that!');
+  }
+});
 
 app.get('/read/:filename', (req, res) => {
-  // console.log(req.params.filename);
+  console.log(req.params.filename);
   const filepath = LogPath + '/' + req.params.filename;
   if (fs.existsSync(filepath)) {
     const data = fs.readFileSync(filepath, {encoding: 'utf8'}).split('\n').map((x, i) => x ? JSON.parse(x) : {});
