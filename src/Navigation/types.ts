@@ -3,3 +3,7 @@ export interface FIleOrDir {
   files?: FIleOrDir[];
   size?: number;
 }
+
+export interface NavigationProps {
+  setActiveLog: React.Dispatch<string>;
+}

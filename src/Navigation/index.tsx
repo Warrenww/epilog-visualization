@@ -13,7 +13,10 @@ import {
   NavBar,
   ButtonLink,
 } from './styles';
-import { FIleOrDir } from './types';
+import {
+  FIleOrDir,
+  NavigationProps,
+ } from './types';
 import API from '../API';
 
 const SizeTag = ({ size }: {size: number | undefined}) => {
@@ -29,7 +32,7 @@ const SizeTag = ({ size }: {size: number | undefined}) => {
   return <></>;
 };
 
-const Navigation = () => {
+const Navigation = ({ setActiveLog }: NavigationProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerChildrenVisible, setDrawerChildrenVisible] = useState(false);
   const [fileList, setFileList] = useState<FIleOrDir[]>([]);
@@ -71,7 +74,8 @@ const Navigation = () => {
                   <ButtonLink
                     block
                     icon={<FileTextOutlined />}
-                    >
+                    onClick={() => setActiveLog(file.name)}
+                  >
                       {file.name}
                       <SizeTag size={file.size}/>
                     </ButtonLink>
@@ -94,7 +98,8 @@ const Navigation = () => {
                 <ButtonLink
                   block
                   icon={<FileTextOutlined />}
-                  >
+                  onClick={() => setActiveLog(`${drawerChildrenName}/${file.name}`)}
+                >
                     {file.name}
                     <SizeTag size={file.size}/>
                   </ButtonLink>
