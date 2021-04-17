@@ -1,7 +1,11 @@
 const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
-const LogPath = '/mnt/c/Users/warren-Lab/OneDrive - g.ntu.edu.tw/University/Master/minecraft/bukkit server/plugins/Epilog';
+const Argv = process.argv.slice(2).reduce((obj, argv) => {
+  const [key, value] = argv.split('=');
+  return {...obj, [key]: value};
+}, {});
+const LogPath = Argv.path ? Argv.path : '../bukkit server/plugins/Epilog';
 const PORT = 8080;
 
 const app = express();
