@@ -4,22 +4,17 @@ import {
   Col,
   Typography,
   Table,
-  Select,
-  Form,
 } from 'antd';
 import {
   DashBoardProps,
 } from './types';
+import { Content } from './styles';
 import API from '../API';
 
 const { Title } = Typography;
-const { Option } = Select;
-const { Item } = Form;
 
 const DashBoard = ({ filename }: DashBoardProps) => {
   const [datas, setDatas] = useState<any[]>([]);
-  const [selectedPlayer, setSelectedPlayer] = useState<string[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<string[]>([]);
 
   useEffect(() => {
     API.get('/read?filename='+filename).then((res) => setDatas(res.data));
@@ -29,84 +24,71 @@ const DashBoard = ({ filename }: DashBoardProps) => {
     console.log(datas);
   }, [datas]);
 
-  const worlds = useMemo(() => Array.from(new Set(datas.map(d => d?.worldUUID ?? ''))), [datas]);
-  const players = useMemo(() => Array.from(new Set(datas.map(d => d?.player ?? ''))), [datas]);
-  const events = useMemo(() => Array.from(new Set(datas.map(d => d?.event))), [datas]);
-  const displayData = useMemo(() => datas
-    .filter((d) => selectedPlayer.length ? selectedPlayer.includes(d.player ?? '') : d)
-    .filter((d) => selectedEvent.length ? selectedEvent.includes(d.event ?? '') : d)
-  , [datas, selectedPlayer]);
-
-  console.log(displayData);
+  // const worlds = useMemo(() => Array.from(new Set(datas.map(d => d?.worldUUID ?? ''))), [datas]);
+  const players = useMemo(() => Array.from(new Set(datas.map(d => d?.player ?? ''))).filter(x => x), [datas]);
+  const events = useMemo(() => Array.from(new Set(datas.map(d => d?.event))).filter(x => x), [datas]);
 
   const columns = [
     {
       title: 'Time',
       dataIndex: 'time',
       key: 'time',
+      width: 150,
     },
     {
       title: 'Event',
       dataIndex: 'event',
       key: 'event',
+      filters: events.map(x => ({
+        text: x,
+        value: x,
+      })),
+      filterMultiple: true,
+      onFilter: (value: any, record: any) => record.event === value,
     },
     {
       title: 'Player',
       dataIndex: 'player',
       key: 'player',
+      filters: players.map(x => ({
+        text: x,
+        value: x,
+      })),
+      filterMultiple: true,
+      onFilter: (value: any, record: any) => record.player === value,
+    },
+    {
+      title: 'Rest',
+      dataIndex: 'rest',
+      key: 'rest',
+      render: (value: any, record: any) => {
+        const { time, event, worldUUID, player, ...rest } = record;
+        return Object.keys(rest).length ? JSON.stringify(rest) : '-';
+      },
     },
   ];
 
   return (
-    <Row>
-      <Col xs={24}>
-        <Title>{filename}</Title>
-      </Col>
-      <Col xs={24}>
-        <Form>
-          <Item label="World">
-            <Select mode="multiple" >
-              {
-                worlds.map((world: string, index: number) => (
-                  <Option key={`world-${index}`} value={world}>
-                    {world}
-                  </Option>
-                ))
-              }
-            </Select>
-          </Item>
-          <Item label="Player">
-            <Select mode="multiple" onChange={(values: string[]) => setSelectedPlayer(values)}>
-              {
-                players.map((player: string, index: number) => (
-                  <Option key={`player-${index}`} value={player}>
-                    {player}
-                  </Option>
-                ))
-              }
-            </Select>
-          </Item>
-          <Item label="Event">
-            <Select mode="multiple" onChange={(values: string[]) => setSelectedEvent(values)}>
-              {
-                events.map((event: string, index: number) => (
-                  <Option key={`event-${index}`} value={event}>
-                    {event}
-                  </Option>
-                ))
-              }
-            </Select>
-          </Item>
-        </Form>
-
-      </Col>
-      <Col xs={24}>
-        <Table
-          columns={columns}
-          dataSource={displayData}
-        />
-      </Col>
-    </Row>
+    <Content>
+      <Row>
+        <Col xs={24}>
+          <Title>{filename}</Title>
+        </Col>
+        <Col xs={24}>
+          <Table
+            columns={columns}
+            dataSource={datas}
+            pagination={{
+              pageSize: 100,
+            }}
+            scroll={{
+              x: columns.reduce((width, col) => width + (col.width ?? 120), 0),
+              y: 600,
+            }}
+          />
+        </Col>
+      </Row>
+    </Content>
   );
 };
 
