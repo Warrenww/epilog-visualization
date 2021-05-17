@@ -32,7 +32,10 @@ const SizeTag = ({ size }: {size: number | undefined}) => {
   return <></>;
 };
 
-const Navigation = ({ setActiveLog }: NavigationProps) => {
+const Navigation = ({
+  setActiveLog,
+  toggleModal,
+}: NavigationProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerChildrenVisible, setDrawerChildrenVisible] = useState(false);
   const [fileList, setFileList] = useState<FIleOrDir[]>([]);
@@ -47,6 +50,7 @@ const Navigation = ({ setActiveLog }: NavigationProps) => {
     <>
     <NavBar>
       <Button onClick={() => setDrawerVisible(!drawerVisible)} shape="circle" icon={<MenuOutlined />} />
+      <Button onClick={() => toggleModal(true)}> Show Read Log Modal </Button>
     </NavBar>
     <Drawer
           title="Logs"

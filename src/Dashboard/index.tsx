@@ -4,17 +4,21 @@ import {
   Col,
   Typography,
   Table,
+  Button,
+  Select,
 } from 'antd';
 import {
   DashBoardProps,
+  Data,
 } from './types';
 import { Content } from './styles';
 import API from '../API';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
+const { Option } = Select;
 
 const DashBoard = ({ filename }: DashBoardProps) => {
-  const [datas, setDatas] = useState<any[]>([]);
+  const [datas, setDatas] = useState<Data[]>([]);
 
   useEffect(() => {
     API.get('/read?filename='+filename).then((res) => setDatas(res.data));
@@ -44,7 +48,7 @@ const DashBoard = ({ filename }: DashBoardProps) => {
         value: x,
       })),
       filterMultiple: true,
-      onFilter: (value: any, record: any) => record.event === value,
+      onFilter: (value: any, record: any) => record.event !== value,
     },
     {
       title: 'Player',
@@ -70,10 +74,21 @@ const DashBoard = ({ filename }: DashBoardProps) => {
 
   return (
     <Content>
-      <Row>
+      <Row gutter={[8, 8]}>
         <Col xs={24}>
           <Title>{filename}</Title>
         </Col>
+        <Col xs={4}><Text>Export :</Text></Col>
+        <Col xs={8}>
+          <Select style={{ width: '100%' }}>
+            {
+              players.map(p => (
+                <Option key={p} value={p}>{p}</Option>
+              ))
+            }
+          </Select>
+        </Col>
+        <Col xs={4}><Button>Export</Button></Col>
         <Col xs={24}>
           <Table
             columns={columns}
