@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import {
   Drawer,
   Button,
   Tag,
+  List,
 } from 'antd';
 import {
   MenuOutlined,
@@ -34,7 +36,6 @@ const SizeTag = ({ size }: {size: number | undefined}) => {
 
 const Navigation = ({
   setActiveLog,
-  toggleModal,
 }: NavigationProps) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [drawerChildrenVisible, setDrawerChildrenVisible] = useState(false);
@@ -50,66 +51,23 @@ const Navigation = ({
     <>
     <NavBar>
       <Button onClick={() => setDrawerVisible(!drawerVisible)} shape="circle" icon={<MenuOutlined />} />
-      <Button onClick={() => toggleModal(true)}> Show Read Log Modal </Button>
     </NavBar>
     <Drawer
-          title="Logs"
-          width={325}
-          closable={false}
-          onClose={() => setDrawerVisible(false)}
-          visible={drawerVisible}
-          placement="left"
-        >
-          {
-              fileList.map((file) => (
-                file.files ? (
-                  <ButtonLink
-                    block
-                    onClick={() => {
-                      setDrawerChildrenVisible(true);
-                      setDrawerChildrenContent(file.files);
-                      setDrawerChildrenName(file.name);
-                    }}
-                    icon={<FolderOpenOutlined />}
-                  >
-                    {file.name}
-                  </ButtonLink>
-                ) : (
-                  <ButtonLink
-                    block
-                    icon={<FileTextOutlined />}
-                    onClick={() => setActiveLog(file.name)}
-                  >
-                      {file.name}
-                      <SizeTag size={file.size}/>
-                    </ButtonLink>
-                )
-              ))
-          }
-          <Drawer
-            title={drawerChildrenName}
-            width={350}
-            closable={false}
-            onClose={() => {
-              setDrawerChildrenVisible(false);
-              setDrawerChildrenContent(undefined);
-            }}
-            visible={drawerChildrenVisible}
-            placement="left"
-          >
-            {
-              drawerChildrenContent?.map((file) => (
-                <ButtonLink
-                  block
-                  icon={<FileTextOutlined />}
-                  onClick={() => setActiveLog(`${drawerChildrenName}/${file.name}`)}
-                >
-                    {file.name}
-                    <SizeTag size={file.size}/>
-                  </ButtonLink>
-              ))
-            }
-          </Drawer>
+      title="Logs"
+      width={325}
+      closable={false}
+      onClose={() => setDrawerVisible(false)}
+      visible={drawerVisible}
+      placement="left"
+    >
+      <List>
+        <List.Item>
+          <Link to='/'> Setting </Link>
+        </List.Item>
+        <List.Item>
+          <Link to='/dashboard'> Dashboard </Link>
+        </List.Item>
+      </List>
     </Drawer>
     </>
   )

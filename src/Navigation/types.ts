@@ -6,5 +6,4 @@ export interface FIleOrDir {
 
 export interface NavigationProps {
   setActiveLog: React.Dispatch<string>;
-  toggleModal: (show: boolean) => void;
 }

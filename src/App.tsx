@@ -1,52 +1,34 @@
 import { useState } from 'react';
 import { AppContainer } from './styles';
-import { Modal, Form, Upload } from 'antd';
-import { InboxOutlined } from '@ant-design/icons';
+
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+} from "react-router-dom";
+import Setting from './Setting';
 import Navigation from './Navigation';
 import Dashboard from './Dashboard';
 import 'antd/dist/antd.dark.css';
 
 const App = () => {
   const [activeLog, setActiveLog] = useState<string>('');
-  const [showModal, setShowModal] = useState<boolean>(false);
-
-  const toggleModal = (show: boolean) => setShowModal(show);
-
-  const normFile = (e: any) => {
-    console.log('Upload event:', e);
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e && e.fileList;
-  };
 
   return (
     <AppContainer>
-      <Navigation
-        setActiveLog={setActiveLog}
-        toggleModal={toggleModal}
-      />
-      <Dashboard filename={activeLog}/>
-      <Modal
-        title="Read log"
-        visible={showModal}
-        onOk={() => setShowModal(false)}
-        onCancel={() => setShowModal(false)}
-      >
-        <Form>
-          <Form.Item label="Dragger">
-            <Form.Item name="dragger" valuePropName="fileList" getValueFromEvent={normFile} noStyle>
-              <Upload.Dragger name="files" action="/upload.do">
-                <p className="ant-upload-drag-icon">
-                  <InboxOutlined />
-                </p>
-                <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                <p className="ant-upload-hint">Support for a single or bulk upload.</p>
-              </Upload.Dragger>
-            </Form.Item>
-          </Form.Item>
-        </Form>
-      </Modal>
+      <Router>
+        <Navigation
+          setActiveLog={setActiveLog}
+        />
+        <Switch>
+          <Route path="/">
+            <Setting/>
+          </Route>
+          <Route path="/dashboard">
+            <Dashboard filename={activeLog}/>
+          </Route>
+        </Switch>
+      </Router>
     </AppContainer>
   );
 }
